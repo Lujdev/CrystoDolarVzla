@@ -124,10 +124,10 @@ export function CryptoContextProvider({ children }: { children: React.ReactNode 
       color = 'bg-yellow-600'
     }
     
-    // Generar nombre según trade_type
-    const name = apiData.trade_type === 'official' 
-      ? `${apiData.base_currency} BCV`
-      : `${apiData.base_currency} Binance p2p`
+    // Generar nombre según exchange_code y base_currency
+    // Mostrar solo 'Binance' cuando exchange_code sea 'BINANCE_P2P'
+    const exchangeName = apiData.exchange_code === 'BINANCE_P2P' ? 'Binance' : apiData.exchange_code
+    const name = `${exchangeName} ${apiData.base_currency}`
     
     return {
       id: `${apiData.base_currency.toLowerCase()}-${apiData.exchange_code}`,

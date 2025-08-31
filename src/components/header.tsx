@@ -135,39 +135,38 @@ export function Header() {
             
             {/* Botón de actualización mejorado */}
             <div className="relative">
-              <Button 
-                variant={buttonState === 'blocked' ? 'secondary' : 'outline'}
+              <Button
                 size="sm" 
                 onClick={handleRefresh}
                 disabled={isLoading || !canUpdate}
                 className={`
-                  header-refresh-button group relative transition-all duration-200
+                  group relative transition-all duration-200 min-w-[40px] sm:min-w-[auto] h-10 sm:h-9 px-2 sm:px-3 gap-2 border-2 font-medium
                   ${buttonState === 'blocked' 
-                    ? 'bg-orange-100/10 border-orange-500/30 text-orange-300 hover:bg-orange-100/20' 
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white border-orange-700 shadow-[4px_4px_0px_0px_theme(colors.orange.700)]' 
                     : ''
                   }
                   ${buttonState === 'loading' 
-                    ? 'bg-blue-100/10 border-blue-500/30 text-blue-300' 
+                    ? 'bg-blue-500 hover:bg-blue-600 text-white border-blue-700 shadow-[4px_4px_0px_0px_theme(colors.blue.700)]' 
                     : ''
                   }
                   ${buttonState === 'ready' 
-                    ? 'hover:bg-gray-100/10 hover:border-gray-400/50' 
+                    ? 'bg-green-500 hover:bg-green-600 text-white border-green-700 shadow-[4px_4px_0px_0px_theme(colors.green.700)]' 
                     : ''
                   }
                 `}
                 title={
                   buttonState === 'blocked' 
-                    ? `Espera ${formatTimeRemaining(timeRemaining)} antes de actualizar nuevamente`
+                    ? `Espera ${formatTimeRemaining(timeRemaining)} antes de refrescar nuevamente`
                     : buttonState === 'loading'
-                    ? 'Actualizando cotizaciones...'
-                    : 'Actualizar cotizaciones'
+                    ? 'Refrescando cotizaciones...'
+                    : 'Refrescar cotizaciones'
                 }
                 aria-label={
                   buttonState === 'blocked' 
-                    ? `Botón bloqueado. Espera ${formatTimeRemaining(timeRemaining)} antes de actualizar`
+                    ? `Botón bloqueado. Espera ${formatTimeRemaining(timeRemaining)} antes de refrescar`
                     : buttonState === 'loading'
-                    ? 'Actualizando cotizaciones, por favor espera'
-                    : 'Actualizar cotizaciones de criptomonedas'
+                    ? 'Refrescando cotizaciones, por favor espera'
+                    : 'Refrescar cotizaciones de criptomonedas'
                 }
               >
                 {/* Icono según el estado */}
@@ -183,16 +182,16 @@ export function Header() {
                 
                 {/* Texto del botón - Responsive y claro */}
                 <span className="hidden sm:inline font-medium">
-                  {buttonState === 'loading' && 'Actualizando...'}
+                  {buttonState === 'loading' && 'Refrescando...'}
                   {buttonState === 'blocked' && `Espera ${formatTimeRemaining(timeRemaining)}`}
-                  {buttonState === 'ready' && 'Actualizar'}
+                  {buttonState === 'ready' && 'Refrescar'}
                 </span>
                 
                 {/* Texto para mobile - Más descriptivo */}
                 <span className="sm:hidden font-medium">
                   {buttonState === 'loading' && '...'}
                   {buttonState === 'blocked' && `${formatTimeRemaining(timeRemaining)}`}
-                  {buttonState === 'ready' && 'Actualizar'}
+                  {buttonState === 'ready' && 'Refrescar'}
                 </span>
               </Button>
               
