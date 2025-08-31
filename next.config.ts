@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // Configuración para Docker (comentado temporalmente para desarrollo)
-  output: 'standalone',
+  // output: 'standalone', // Comentado para evitar errores de symlinks en Windows
 
   // Configuración experimental para optimización de CSS
   experimental: {

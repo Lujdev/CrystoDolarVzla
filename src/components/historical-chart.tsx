@@ -70,7 +70,7 @@ export function HistoricalChart({ data, startDate, endDate }: HistoricalChartPro
     'BINANCE_P2P-USDT/VES': { border: '#f59e0b', background: '#f59e0b20' },
   };
 
-  // Create datasets for the chart with stepped lines by default
+  // Create datasets for the chart with smooth curved lines
   const datasets = Object.entries(groupedData).map(([key, rates]) => {
     const [exchange, pair] = key.split('-');
     const color = colors[key as keyof typeof colors] || { border: '#6b7280', background: '#6b728020' };
@@ -85,8 +85,8 @@ export function HistoricalChart({ data, startDate, endDate }: HistoricalChartPro
       backgroundColor: 'transparent',
       borderWidth: 2,
       fill: false,
-      tension: 0,
-      stepped: 'before' as const,
+      tension: 0.4, // Add curve tension for smooth lines
+      cubicInterpolationMode: 'monotone' as const, // Use monotone interpolation for natural curves
       pointRadius: 3,
       pointHoverRadius: 5,
       pointBackgroundColor: color.border,
@@ -143,7 +143,7 @@ export function HistoricalChart({ data, startDate, endDate }: HistoricalChartPro
       },
       title: {
         display: true,
-        text: `Historical Exchange Rates - Stepped Line Chart${startDate && endDate ? ` (${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()})` : ''}`,
+        text: `Historico de Cotizaciones ${startDate && endDate ? ` (${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()})` : ''}`,
         color: '#f3f4f6',
         font: {
           size: 16,

@@ -66,7 +66,10 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
   }
 
   const handleHistorical = () => {
-    window.location.href = '/history'  // Changed from '/historico' to '/history'
+    // Extraer exchange_code del ID del rate
+    // El ID tiene formato: {base_currency.toLowerCase()}-{exchange_code}
+    const exchangeCode = rate.id.split('-').slice(1).join('-')
+    window.location.href = `/history?exchange=${exchangeCode}&records=200`
   }
 
   const handleOfficialSite = () => {
