@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { TrendingUp, TrendingDown, Minus, DollarSign, Building2, Calculator, Globe, InfoIcon } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, DollarSign, Building2, Calculator, Globe, InfoIcon, Euro, Wallet } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { CryptoRate } from '@/types/currency'
 import { formatVariation } from '@/lib/crypto-data'
@@ -21,6 +21,8 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
   const [showInfo, setShowInfo] = useState(false)
   const [showCalc, setShowCalc] = useState(false)
   const infoRef = useRef<HTMLDivElement | null>(null)
+
+  console.log(rate)
 
 
   useEffect(() => {
@@ -52,8 +54,11 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
    * Obtiene el ícono según el tipo de cotización
    */
   const getTypeIcon = (baseCurrency: string) => {
-    if (baseCurrency === 'USD' || baseCurrency === 'EUR') return <Building2 className="h-4 w-4" />
-    return <DollarSign className="h-4 w-4" />
+    const iconMap = {
+      'USD': <DollarSign className="h-4 w-4" />,
+      'EUR': <Euro className="h-4 w-4" />
+    }
+    return iconMap[baseCurrency as keyof typeof iconMap] || <Wallet className="h-4 w-4" />;
   }
 
 
@@ -73,7 +78,7 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
   }
 
   const handleOfficialSite = () => {
-    const url = rate.tradeType === 'official' 
+    const url = rate.name.slice(0, 3) === 'BCV' 
       ? 'https://www.bcv.org.ve'
       : 'https://p2p.binance.com'
     window.open(url, '_blank')
@@ -83,7 +88,7 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
    * Obtiene la información específica para cada tipo de cotización
    */
   const getInfoContent = () => {
-    if (rate.tradeType === 'official') {
+    if (rate.name.slice(0, 3) === 'BCV') {
       return {
         title: '¿Qué representa este valor?',
         description: `Se trata del ${rate.baseCurrency} oficial del Banco Central de Venezuela (BCV), utilizado para transacciones gubernamentales y comerciales autorizadas.`,
