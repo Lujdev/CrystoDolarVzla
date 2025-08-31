@@ -48,7 +48,7 @@ export function Footer() {
             <h4 className="text-md font-semibold mb-4">Legal y Contacto</h4>
             <ul className="space-y-2 text-sm text-gray-400 mb-4">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="/terms" className="hover:text-white transition-colors">
                   Términos de Uso
                 </a>
               </li>
@@ -58,13 +58,6 @@ export function Footer() {
             {/* Redes sociales */}
             <div className="flex space-x-4">
              
-              <a 
-                href="#" 
-                className="text-gray-400 hover:text-white transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
             </div>
           </div>
         </div>
