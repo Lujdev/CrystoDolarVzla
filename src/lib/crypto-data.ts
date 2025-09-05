@@ -8,69 +8,160 @@ import { CryptoRate } from '@/types/currency'
 export const mockCryptoRates: CryptoRate[] = [
   {
     id: 'usd-bcv',
-    name: 'USD Oficial',
+    name: 'BCV USD',
     category: 'dolar',
-    buy: 36.50,
-    sell: 36.50,
-    variation: 0.0,
+    buy: 152.8216,
+    sell: 152.8216,
+    avg: 152.8216,
     lastUpdate: new Date(),
     type: 'fiat',
     color: 'bg-blue-600',
-    description: 'Banco Central de Venezuela - USD/VES',
+    description: 'bcv_web_scraping - USD/VES',
     baseCurrency: 'USD',
     quoteCurrency: 'VES',
-    tradeType: 'official'
+    tradeType: 'official',
+    exchangeCode: 'BCV'
   },
   {
     id: 'usdt-binance_p2p',
-    name: 'USDT Binance',
+    name: 'Binance USDT',
     category: 'cripto',
-    buy: 37.20,
-    sell: 37.80,
-    variation: -1.2,
+    buy: 285.0,
+    sell: 194.0,
+    avg: 239.5,
     lastUpdate: new Date(),
     type: 'crypto',
     color: 'bg-yellow-600',
-    description: 'Binance P2P - USDT/VES',
+    description: 'binance_p2p_api - USDT/VES',
     baseCurrency: 'USDT',
     quoteCurrency: 'VES',
-    tradeType: 'p2p'
+    tradeType: 'p2p',
+    exchangeCode: 'BINANCE_P2P',
+    volume24h: 235289.68
+  },
+  {
+    id: 'usd-italcambios',
+    name: 'Italcambios USD',
+    category: 'dolar',
+    buy: 151.7627,
+    sell: 153.2803,
+    avg: 152.5215,
+    lastUpdate: new Date(),
+    type: 'fiat',
+    color: 'bg-blue-600',
+    description: 'italcambios_web_scraping - USD/VES',
+    baseCurrency: 'USD',
+    quoteCurrency: 'VES',
+    tradeType: 'p2p',
+    exchangeCode: 'ITALCAMBIOS'
   }
 ]
 
 /**
  * Función para formatear valores en Bolívares Soberanos
  * @param value - Valor numérico a formatear
- * @returns String formateado con símbolo Bs.S
+ * @returns String formateado con símbolo Bs.
  */
 export function formatBolivares(value: number): string {
   return new Intl.NumberFormat('es-VE', {
-    style: 'currency',
-    currency: 'VES',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  }).format(value).replace('VES', 'Bs.S')
+  }).format(value) + ' Bs'
+}
+
+
+/**
+ * Configuración escalable para diferentes tipos de monedas
+ * Fácil de extender para nuevas monedas y exchanges
+ */
+export const CURRENCY_CONFIG = {
+  'USD': {
+    category: 'dolar' as const,
+    type: 'fiat' as const,
+    color: 'bg-blue-600',
+    icon: 'DollarSign'
+  },
+  'EUR': {
+    category: 'euro' as const,
+    type: 'fiat' as const,
+    color: 'bg-indigo-600',
+    icon: 'Euro'
+  },
+  'USDT': {
+    category: 'cripto' as const,
+    type: 'crypto' as const,
+    color: 'bg-yellow-600',
+    icon: 'Wallet'
+  },
+  'BTC': {
+    category: 'cripto' as const,
+    type: 'crypto' as const,
+    color: 'bg-orange-600',
+    icon: 'Wallet'
+  },
+  'ETH': {
+    category: 'cripto' as const,
+    type: 'crypto' as const,
+    color: 'bg-purple-600',
+    icon: 'Wallet'
+  }
 }
 
 /**
- * Función para formatear porcentajes de variación
- * @param variation - Valor decimal de variación (-1.2 para -1.2%)
- * @returns String formateado con signo y símbolo de porcentaje
+ * Configuración escalable para diferentes exchanges
+ * Fácil de extender para nuevos exchanges
  */
-export function formatVariation(variation: number): string {
-  const sign = variation >= 0 ? '+' : ''
-  return `${sign}${variation.toFixed(2)}%`
+export const EXCHANGE_CONFIG = {
+  'BCV': {
+    name: 'BCV',
+    tradeType: 'official' as const,
+    url: 'https://www.bcv.org.ve',
+    description: 'Banco Central de Venezuela',
+    schedule: 'Actualizado de lunes a viernes de 9:00h a 16:00h.'
+  },
+  'BINANCE_P2P': {
+    name: 'Binance',
+    tradeType: 'p2p' as const,
+    url: 'https://p2p.binance.com',
+    description: 'Binance P2P Venezuela',
+    schedule: 'Opera las 24 horas, los 7 días de la semana.'
+  },
+  'ITALCAMBIOS': {
+    name: 'Italcambios',
+    tradeType: 'p2p' as const,
+    url: 'https://italcambios.com',
+    description: 'Italcambios',
+    schedule: 'Horario comercial de lunes a viernes.'
+  }
 }
 
 /**
- * Función para obtener el color de la variación
- * @param variation - Valor de variación
- * @returns Clase CSS para colorear según si es positiva o negativa
+ * Función para obtener configuración de moneda de forma escalable
+ * @param baseCurrency - Código de la moneda base
+ * @returns Configuración de la moneda o configuración por defecto
  */
-export function getVariationColor(variation: number): string {
-  if (variation > 0) return 'text-green-600'
-  if (variation < 0) return 'text-red-600'
-  return 'text-gray-600'
+export function getCurrencyConfig(baseCurrency: string) {
+  return CURRENCY_CONFIG[baseCurrency as keyof typeof CURRENCY_CONFIG] || {
+    category: 'cripto' as const,
+    type: 'crypto' as const,
+    color: 'bg-gray-600',
+    icon: 'Wallet'
+  }
+}
+
+/**
+ * Función para obtener configuración de exchange de forma escalable
+ * @param exchangeCode - Código del exchange
+ * @returns Configuración del exchange o configuración por defecto
+ */
+export function getExchangeConfig(exchangeCode: string) {
+  return EXCHANGE_CONFIG[exchangeCode as keyof typeof EXCHANGE_CONFIG] || {
+    name: exchangeCode,
+    tradeType: 'p2p' as const,
+    url: '#',
+    description: exchangeCode,
+    schedule: 'Actualización continua.'
+  }
 }
 
 /**

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { TrendingUp, TrendingDown, Minus, DollarSign, Building2, Calculator, Globe, InfoIcon, Euro, Wallet } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { CryptoRate } from '@/types/currency'
-import { formatVariation } from '@/lib/crypto-data'
+import { formatBolivares, getExchangeConfig } from '@/lib/crypto-data'
 import { CalculatorModal } from '@/components/calculator-modal'
 
 interface CurrencyCardProps {
@@ -41,14 +41,6 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
       document.removeEventListener('keydown', onKey)
     }
   }, [])
-  /**
-   * Determina el ícono a mostrar según la variación
-   */
-  const getVariationIcon = (variation: number) => {
-    if (variation > 0) return <TrendingUp className="h-3 w-3" />
-    if (variation < 0) return <TrendingDown className="h-3 w-3" />
-    return <Minus className="h-3 w-3" />
-  }
 
   /**
    * Obtiene el ícono según el tipo de cotización
@@ -78,40 +70,33 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
   }
 
   const handleOfficialSite = () => {
-    const url = rate.name.slice(0, 3) === 'BCV' 
-      ? 'https://www.bcv.org.ve'
-      : 'https://p2p.binance.com'
-    window.open(url, '_blank')
+    const exchangeConfig = getExchangeConfig(rate.exchangeCode)
+    if (exchangeConfig.url !== '#') {
+      window.open(exchangeConfig.url, '_blank')
+    }
   }
 
   /**
    * Obtiene la información específica para cada tipo de cotización
+   * Escalable para múltiples exchanges y cryptos usando configuración centralizada
    */
   const getInfoContent = () => {
-    if (rate.name.slice(0, 3) === 'BCV') {
-      return {
-        title: '¿Qué representa este valor?',
-        description: `Se trata del ${rate.baseCurrency} oficial del Banco Central de Venezuela (BCV), utilizado para transacciones gubernamentales y comerciales autorizadas.`,
-        schedule: 'Actualizado de lunes a viernes de 9:00h a 16:00h.',
-        source: 'Fuente oficial: BCV'
-      }
-    } else {
-      return {
-        title: '¿Qué representa este valor?',
-        description: `Se trata del ${rate.baseCurrency} negociado directamente entre privados en la plataforma Binance P2P, reflejando el mercado venezolano.`,
-        schedule: 'Opera las 24 horas, los 7 días de la semana.',
-        source: 'Fuente: Binance P2P Venezuela'
-      }
+    const exchangeConfig = getExchangeConfig(rate.exchangeCode)
+    
+    return {
+      title: '¿Qué representa este valor?',
+      description: `Se trata del ${rate.baseCurrency} ofrecido por ${exchangeConfig.description}, reflejando las condiciones del mercado venezolano.`,
+      schedule: exchangeConfig.schedule,
+      source: `Fuente: ${exchangeConfig.description}`
     }
   }
 
   return (
     <Card className="bg-gray-900 border-red-500 border-2 rounded-lg hover:shadow-xl transition-all duration-300 group w-full h-auto min-h-[280px] flex flex-col currency-card-mobile">
-      {/* Header con variación - más compacto */}
+      {/* Header con precio promedio */}
       <div className="bg-red-600 p-2 flex items-center justify-center">
-        <div className={`flex items-center space-x-1 text-white font-bold`}>
-          {getVariationIcon(rate.variation)}
-          <span className="text-sm">{formatVariation(rate.variation)}</span>
+        <div className="flex items-center space-x-1 text-white font-bold">
+          <span className="text-sm">PROMEDIO</span>
         </div>
       </div>
 
@@ -153,32 +138,35 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
           </div>
         </div>
 
-        {/* Precios principales - más juntos como en la imagen */}
-        <div className="grid grid-cols-2 gap-1 mb-4">
-          {/* Precio de venta */}
+        {/* Precio promedio principal */}
+        <div className="text-center mb-4">
+          <p className="text-xs text-gray-400 mb-2">Precio Promedio</p>
           <div className="text-center">
-            <p className="text-xs text-gray-400 mb-1">Vende</p>
-            <div className="text-center">
-              <p className="text-sm font-bold text-white mb-1">
-                1 {rate.baseCurrency} =
-              </p>
-              <p className="text-lg font-bold text-white">
-                {rate.quoteCurrency === 'VES' ? `${rate.sell.toFixed(4)} Bs` : `${rate.sell.toFixed(4)} ${rate.quoteCurrency}`}
-              </p>
-            </div>
+            <p className="text-sm font-bold text-white mb-1">
+              1 {rate.baseCurrency} =
+            </p>
+            <p className="text-2xl font-bold text-yellow-400">
+              {rate.quoteCurrency === 'VES' ? formatBolivares(rate.avg) : `${rate.avg.toFixed(4)} ${rate.quoteCurrency}`}
+            </p>
+          </div>
+        </div>
+
+        {/* Precios de compra y venta - más pequeños */}
+        <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
+          {/* Precio de venta */}
+          <div className="text-center bg-gray-800 rounded p-2">
+            <p className="text-gray-400 mb-1">Vende</p>
+            <p className="text-white font-semibold">
+              {rate.quoteCurrency === 'VES' ? formatBolivares(rate.sell) : `${rate.sell.toFixed(4)} ${rate.quoteCurrency}`}
+            </p>
           </div>
 
-          {/* Separador vertical */}
-          <div className="text-center border-l border-gray-600">
-            <p className="text-xs text-gray-400 mb-1">Compra</p>
-            <div className="text-center">
-              <p className="text-sm font-bold text-green-400 mb-1">
-                1 {rate.baseCurrency} =
-              </p>
-              <p className="text-lg font-bold text-green-400">
-                {rate.quoteCurrency === 'VES' ? `${rate.buy.toFixed(4)} Bs` : `${rate.buy.toFixed(4)} ${rate.quoteCurrency}`}
-              </p>
-            </div>
+          {/* Precio de compra */}
+          <div className="text-center bg-gray-800 rounded p-2">
+            <p className="text-gray-400 mb-1">Compra</p>
+            <p className="text-green-400 font-semibold">
+              {rate.quoteCurrency === 'VES' ? formatBolivares(rate.buy) : `${rate.buy.toFixed(4)} ${rate.quoteCurrency}`}
+            </p>
           </div>
         </div>
 

@@ -3,35 +3,39 @@
  * Define interfaces para el manejo de datos de criptomonedas fiat/crypto
  */
 
-export interface ApiRateData {
-  id: number
+export interface ProcessedRateData {
   exchange_code: string
   currency_pair: string
-  base_currency: string
-  quote_currency: string
   buy_price: number
   sell_price: number
   avg_price: number
-  volume?: number | null
   volume_24h?: number | null
   source: string
-  api_method: string
-  trade_type: 'official' | 'p2p'
-  timestamp: string
-  variation_percentage: string
-  variation_1h?: string
-  variation_24h?: string
-  trend_main: 'up' | 'down' | 'stable'
-  trend_1h?: 'up' | 'down' | 'stable'
-  trend_24h?: 'up' | 'down' | 'stable'
+}
+
+export interface ExchangeUpdateStatus {
+  status: 'success' | 'error'
+  processed_data: ProcessedRateData[]
 }
 
 export interface ApiResponse {
   status: string
-  data: ApiRateData[]
+  data: ProcessedRateData[]
   count: number
   source: string
-  auto_saved_to_history: boolean
+  cached: boolean
+  update_status: {
+    [exchangeName: string]: ExchangeUpdateStatus
+  }
+  execution_time_seconds: number
+  optimization: {
+    transaction_mode: boolean
+    prepared_statements: boolean
+    connection_pool: {
+      status: string
+    }
+    cache_updated: boolean
+  }
   timestamp: string
 }
 
@@ -46,8 +50,8 @@ export interface CryptoRate {
   buy: number
   /** Precio de venta en Bolívares */
   sell: number
-  /** Variación porcentual del día */
-  variation: number
+  /** Precio promedio en Bolívares */
+  avg: number
   /** Timestamp de última actualización */
   lastUpdate: Date
   /** Tipo de cambio (oficial fiat o crypto) */
@@ -62,6 +66,10 @@ export interface CryptoRate {
   quoteCurrency: string
   /** Tipo de comercio */
   tradeType: 'official' | 'p2p'
+  /** Código del exchange */
+  exchangeCode: string
+  /** Volumen de 24h si está disponible */
+  volume24h?: number | null
 }
 
 export interface CurrencyContextState {
