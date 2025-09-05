@@ -1,7 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react'
-import { CurrencyContextState, CurrencyContextActions, CryptoRate, ApiResponse, ApiRateData } from '@/types/currency'
+import { CurrencyContextState, CurrencyContextActions, CryptoRate, ApiResponse, ProcessedRateData } from '@/types/currency'
+import { getCurrencyConfig, getExchangeConfig } from '@/lib/crypto-data'
 import { toast } from 'sonner'
 
 /**
@@ -101,48 +102,37 @@ export function CryptoContextProvider({ children }: { children: React.ReactNode 
 
   /**
    * Función para mapear datos de la API al formato interno
+   * Procesa el nuevo formato JSON con update_status
    */
-  const mapApiDataToRate = (apiData: ApiRateData): CryptoRate => {
-    const variation = parseFloat(apiData.variation_percentage.replace('%', '').replace('+', ''))
+  const mapApiDataToRate = (apiData: ProcessedRateData): CryptoRate => {
+    // Extraer moneda base del currency_pair (ej: "USD/VES" -> "USD")
+    const [baseCurrency, quoteCurrency] = apiData.currency_pair.split('/')
     
-    // Determinar categoría basada en base_currency
-    let category: 'dolar' | 'euro' | 'cripto'
-    let type: 'fiat' | 'crypto'
-    let color: string
+    // Obtener configuración de moneda de forma escalable
+    const currencyConfig = getCurrencyConfig(baseCurrency)
     
-    if (apiData.base_currency === 'USD') {
-      category = 'dolar'
-      type = 'fiat'
-      color = 'bg-blue-600'
-    } else if (apiData.base_currency === 'EUR') {
-      category = 'euro'
-      type = 'fiat'
-      color = 'bg-indigo-600'
-    } else {
-      category = 'cripto'
-      type = 'crypto'
-      color = 'bg-yellow-600'
-    }
+    // Obtener configuración de exchange de forma escalable
+    const exchangeConfig = getExchangeConfig(apiData.exchange_code)
     
-    // Generar nombre según exchange_code y base_currency
-    // Mostrar solo 'Binance' cuando exchange_code sea 'BINANCE_P2P'
-    const exchangeName = apiData.exchange_code === 'BINANCE_P2P' ? 'Binance' : apiData.exchange_code
-    const name = `${exchangeName} ${apiData.base_currency}`
+    // Generar nombre usando la configuración escalable
+    const name = `${exchangeConfig.name} ${baseCurrency}`
     
     return {
-      id: `${apiData.base_currency.toLowerCase()}-${apiData.exchange_code}`,
+      id: `${baseCurrency.toLowerCase()}-${apiData.exchange_code}`,
       name,
-      category,
+      category: currencyConfig.category,
       buy: apiData.buy_price,
       sell: apiData.sell_price,
-      variation,
-      lastUpdate: new Date(apiData.timestamp),
-      type,
-      color,
+      avg: apiData.avg_price,
+      lastUpdate: new Date(),
+      type: currencyConfig.type,
+      color: currencyConfig.color,
       description: `${apiData.source} - ${apiData.currency_pair}`,
-      baseCurrency: apiData.base_currency,
-      quoteCurrency: apiData.quote_currency,
-      tradeType: apiData.trade_type
+      baseCurrency,
+      quoteCurrency,
+      tradeType: exchangeConfig.tradeType,
+      exchangeCode: apiData.exchange_code,
+      volume24h: apiData.volume_24h
     }
   }
 
@@ -184,12 +174,24 @@ export function CryptoContextProvider({ children }: { children: React.ReactNode 
       
       const apiResponse: ApiResponse = await response.json()
       
-      if (apiResponse.status !== 'success' || !apiResponse.data) {
+      if (apiResponse.status !== 'success') {
         throw new Error('Respuesta inválida de la API')
       }
       
-      // Mapear datos de la API al formato interno
-      const updatedRates: CryptoRate[] = apiResponse.data.map(mapApiDataToRate)
+      // Procesar datos del nuevo formato con update_status
+      const allRates: CryptoRate[] = []
+      
+      // Iterar sobre cada exchange en update_status
+      Object.entries(apiResponse.update_status).forEach(([exchangeName, exchangeData]) => {
+        if (exchangeData.status === 'success' && exchangeData.processed_data) {
+          // Mapear cada processed_data a CryptoRate
+          const exchangeRates = exchangeData.processed_data.map(mapApiDataToRate)
+          allRates.push(...exchangeRates)
+        }
+      })
+      
+      // Si no hay datos en update_status, usar el array data como fallback
+      const updatedRates = allRates.length > 0 ? allRates : apiResponse.data.map(mapApiDataToRate)
       
       dispatch({ type: 'SET_RATES', payload: updatedRates })
       
