@@ -63,7 +63,11 @@ export function CurrencyTabs({ onTabChange }: CurrencyTabsProps) {
               ${activeTab === tab.id 
                 ? tab.id === 'dolar' 
                   ? 'bg-green-600 text-white shadow-lg' 
-                  : 'bg-gray-600 text-white shadow-lg'
+                  : tab.id === 'euro'
+                  ? 'bg-indigo-600 text-white shadow-lg'
+                  : tab.id === 'cripto'
+                  ? 'bg-yellow-600 text-white shadow-lg'
+                  : 'bg-blue-600 text-white shadow-lg'
                 : 'text-gray-400 hover:text-white hover:bg-gray-700'
               }
             `}
