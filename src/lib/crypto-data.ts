@@ -64,8 +64,8 @@ export const mockCryptoRates: CryptoRate[] = [
  */
 export function formatBolivares(value: number): string {
   return new Intl.NumberFormat('es-VE', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    minimumFractionDigits: 4,
+    maximumFractionDigits: 4
   }).format(value) + ' Bs'
 }
 
