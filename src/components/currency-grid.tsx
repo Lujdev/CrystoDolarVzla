@@ -21,8 +21,8 @@ export function CurrencyGrid() {
     return (
       <div className="space-y-6">
         {/* Grilla de skeletons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {Array.from({ length: 3 }).map((_, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {Array.from({ length: 4 }).map((_, index) => (
             <CurrencyCardSkeleton key={index} />
           ))}
         </div>
@@ -96,7 +96,7 @@ export function CurrencyGrid() {
       )}
 
       {/* Grilla principal de cotizaciones */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {visibleRates.map((rate: CryptoRate) => (
           <CurrencyCard key={rate.id} rate={rate} />
         ))}

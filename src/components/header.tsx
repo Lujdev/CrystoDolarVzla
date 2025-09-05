@@ -86,7 +86,8 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo y título */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <div>
+            {/* Logo - Oculto en pantallas menores a 390px */}
+            <div className="hidden min-[390px]:block">
               <Image 
                 src="https://cdn.crystodolarvzla.site/crysto.png" 
                 alt="CrystoDolar Logo" 
@@ -140,17 +141,17 @@ export function Header() {
                 onClick={handleRefresh}
                 disabled={isLoading || !canUpdate}
                 className={`
-                  group relative transition-all duration-200 min-w-[40px] sm:min-w-[auto] h-10 sm:h-9 px-2 sm:px-3 gap-2 border-2 font-medium
+                  group relative transition-all duration-200 min-w-[28px] sm:min-w-[auto] h-7 sm:h-9 px-1 sm:px-3 gap-0.5 sm:gap-2 border-2 font-medium text-xs sm:text-sm rounded-md
                   ${buttonState === 'blocked' 
-                    ? 'bg-orange-500 hover:bg-orange-600 text-white border-orange-700 shadow-[4px_4px_0px_0px_theme(colors.orange.700)]' 
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white border-orange-700 shadow-[2px_2px_0px_0px_theme(colors.orange.700)] sm:shadow-[4px_4px_0px_0px_theme(colors.orange.700)]' 
                     : ''
                   }
                   ${buttonState === 'loading' 
-                    ? 'bg-blue-500 hover:bg-blue-600 text-white border-blue-700 shadow-[4px_4px_0px_0px_theme(colors.blue.700)]' 
+                    ? 'bg-blue-500 hover:bg-blue-600 text-white border-blue-700 shadow-[2px_2px_0px_0px_theme(colors.blue.700)] sm:shadow-[4px_4px_0px_0px_theme(colors.blue.700)]' 
                     : ''
                   }
                   ${buttonState === 'ready' 
-                    ? 'bg-green-500 hover:bg-green-600 text-white border-green-700 shadow-[4px_4px_0px_0px_theme(colors.green.700)]' 
+                    ? 'bg-green-500 hover:bg-green-600 text-white border-green-700 shadow-[2px_2px_0px_0px_theme(colors.green.700)] sm:shadow-[4px_4px_0px_0px_theme(colors.green.700)]' 
                     : ''
                   }
                 `}
@@ -171,13 +172,13 @@ export function Header() {
               >
                 {/* Icono según el estado */}
                 {buttonState === 'loading' && (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <RefreshCw className="h-2.5 w-2.5 sm:h-4 sm:w-4 animate-spin" />
                 )}
                 {buttonState === 'blocked' && (
-                  <Clock className="h-4 w-4" />
+                  <Clock className="h-2.5 w-2.5 sm:h-4 sm:w-4" />
                 )}
                 {buttonState === 'ready' && (
-                  <RefreshCw className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
+                  <RefreshCw className="h-2.5 w-2.5 sm:h-4 sm:w-4 transition-transform duration-200 group-hover:rotate-180" />
                 )}
                 
                 {/* Texto del botón - Responsive y claro */}
@@ -199,7 +200,7 @@ export function Header() {
               {buttonState === 'blocked' && (
                 <>
                   {/* Punto naranja pulsante */}
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-3 sm:h-3 bg-orange-500 rounded-full animate-pulse" />
                   
                   {/* Borde naranja pulsante para mobile */}
                   <div className="absolute inset-0 rounded-md border-2 border-orange-500/50 animate-pulse sm:hidden" />
@@ -208,7 +209,7 @@ export function Header() {
               
               {/* Indicador visual para estado de carga */}
               {buttonState === 'loading' && (
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-pulse" />
               )}
             </div>
           </div>

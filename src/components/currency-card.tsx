@@ -92,18 +92,13 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
   }
 
   return (
-    <Card className="bg-gray-900 border-red-500 border-2 rounded-lg hover:shadow-xl transition-all duration-300 group w-full h-auto min-h-[280px] flex flex-col currency-card-mobile">
-      {/* Header con precio promedio */}
-      <div className="bg-red-600 p-2 flex items-center justify-center">
-        <div className="flex items-center space-x-1 text-white font-bold">
-          <span className="text-sm">PROMEDIO</span>
-        </div>
-      </div>
+    <Card className="bg-gray-900 border-green-500 border-2 rounded-lg hover:shadow-xl transition-all duration-300 group w-full h-auto min-h-[200px] flex flex-col currency-card-mobile">
+      {/* Header con precio promedio - removido */}
 
-      {/* Contenido principal - más compacto */}
+      {/* Contenido principal */}
       <div className="p-3 text-white flex-1 flex flex-col justify-between">
         {/* Título y estado */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
             {getTypeIcon(rate.baseCurrency)}
             <h3 className="text-sm font-bold text-white">
@@ -116,7 +111,7 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
                 className="text-gray-400 hover:text-blue-400 cursor-pointer transition-colors"
                 title="Información sobre esta cotización"
               >
-                <InfoIcon className="h-3 w-3" />
+                <InfoIcon className="h-4 w-4" />
               </button>
 
               {showInfo && (
@@ -145,33 +140,33 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
             <p className="text-sm font-bold text-white mb-1">
               1 {rate.baseCurrency} =
             </p>
-            <p className="text-2xl font-bold text-yellow-400">
+            <p className="text-xl font-bold text-green-400">
               {rate.quoteCurrency === 'VES' ? formatBolivares(rate.avg) : `${rate.avg.toFixed(4)} ${rate.quoteCurrency}`}
             </p>
           </div>
         </div>
 
-        {/* Precios de compra y venta - más pequeños */}
-        <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
+        {/* Precios de compra y venta */}
+        <div className="grid grid-cols-2 gap-2 mb-4">
           {/* Precio de venta */}
-          <div className="text-center bg-gray-800 rounded p-2">
-            <p className="text-gray-400 mb-1">Vende</p>
-            <p className="text-white font-semibold">
+          <div className="text-center bg-gray-800 rounded p-2 border border-gray-700">
+            <p className="text-gray-400 mb-1 text-xs">Vende</p>
+            <p className="text-white font-bold text-sm">
               {rate.quoteCurrency === 'VES' ? formatBolivares(rate.sell) : `${rate.sell.toFixed(4)} ${rate.quoteCurrency}`}
             </p>
           </div>
 
           {/* Precio de compra */}
-          <div className="text-center bg-gray-800 rounded p-2">
-            <p className="text-gray-400 mb-1">Compra</p>
-            <p className="text-green-400 font-semibold">
+          <div className="text-center bg-gray-800 rounded p-2 border border-gray-700">
+            <p className="text-gray-400 mb-1 text-xs">Compra</p>
+            <p className="text-green-400 font-bold text-sm">
               {rate.quoteCurrency === 'VES' ? formatBolivares(rate.buy) : `${rate.buy.toFixed(4)} ${rate.quoteCurrency}`}
             </p>
           </div>
         </div>
 
-        {/* Acciones - 3 iconos más juntos */}
-        <div className="flex items-center justify-center space-x-6 pt-2 border-t border-gray-700">
+        {/* Acciones */}
+        <div className="flex items-center justify-center space-x-6 pt-3 border-t border-gray-700">
           <button
             onClick={handleCalculator}
             className="text-gray-400 hover:text-blue-400 transition-colors cursor-pointer"
