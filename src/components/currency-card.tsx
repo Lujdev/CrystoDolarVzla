@@ -175,13 +175,14 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
             <Calculator className="h-5 w-5 hover:scale-110 transition-transform" />
           </button>
 
-          <button
+          {/* Botón histórico OCULTO TEMPORALMENTE */}
+          {/* <button
             onClick={handleHistorical}
             className="text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer"
             title="Ver Cotización Histórica"
           >
             <TrendingUp className="h-5 w-5 hover:scale-110 transition-transform" />
-          </button>
+          </button> */}
 
           <button
             onClick={handleOfficialSite}

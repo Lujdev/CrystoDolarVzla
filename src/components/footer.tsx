@@ -30,15 +30,15 @@ export function Footer() {
             <h4 className="text-md font-semibold mb-4">Recursos Útiles</h4>
             <ul className="space-y-2 text-sm text-gray-400">
 
-
-              <li>
+              {/* Historial de Cotizaciones OCULTO TEMPORALMENTE */}
+              {/* <li>
                 <a 
                   href="#" 
                   className="hover:text-white transition-colors"
                 >
                   Historial de Cotizaciones
                 </a>
-              </li>
+              </li> */}
 
             </ul>
           </div>
