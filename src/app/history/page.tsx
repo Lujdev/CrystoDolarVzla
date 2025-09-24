@@ -289,7 +289,9 @@ function HistoryContent() {
           <HistoricalChart 
             data={historicalData} 
             startDate={currentDateRange.startDate} 
-            endDate={currentDateRange.endDate} 
+            endDate={currentDateRange.endDate}
+            initialExchange={selectedExchange}
+            initialPeriod={selectedPeriod}
           />
         ) : (
           <div className="text-center py-12">

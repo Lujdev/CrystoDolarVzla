@@ -41,6 +41,8 @@ interface HistoricalChartProps {
   data: HistoricalRate[];
   startDate?: string;
   endDate?: string;
+  initialExchange?: string;
+  initialPeriod?: TimePeriod;
 }
 
 // Array de exchanges disponibles - fácil de extender
@@ -61,9 +63,20 @@ const TIME_PERIODS = {
 
 type TimePeriod = keyof typeof TIME_PERIODS;
 
-export function HistoricalChart({ data, startDate, endDate }: HistoricalChartProps) {
-  const [timeRange, setTimeRange] = React.useState<TimePeriod>('7d');
-  const [selectedExchange, setSelectedExchange] = React.useState('all');
+// Función para mapear exchanges de URL a valores del componente
+function mapExchangeFromURL(urlExchange: string): string {
+  const exchangeMap: { [key: string]: string } = {
+    'BCV': 'BCV USD', // Por defecto BCV USD
+    'ITALCAMBIOS': 'ITALCAMBIOS',
+    'BINANCE_P2P': 'BINANCE_P2P',
+    'all': 'all'
+  };
+  return exchangeMap[urlExchange] || 'all';
+}
+
+export function HistoricalChart({ data, startDate, endDate, initialExchange = 'all', initialPeriod = '7d' }: HistoricalChartProps) {
+  const [timeRange, setTimeRange] = React.useState<TimePeriod>(initialPeriod);
+  const [selectedExchange, setSelectedExchange] = React.useState(mapExchangeFromURL(initialExchange));
 
   // Transform data for recharts format
   const transformedData = React.useMemo(() => {

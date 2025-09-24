@@ -31,14 +31,14 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
 
               {/* Historial de Cotizaciones OCULTO TEMPORALMENTE */}
-              {/* <li>
+              <li>
                 <a 
                   href="#" 
                   className="hover:text-white transition-colors"
                 >
                   Historial de Cotizaciones
                 </a>
-              </li> */}
+              </li>
 
             </ul>
           </div>
