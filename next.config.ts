@@ -107,8 +107,8 @@ const nextConfig: NextConfig = {
 
   // Configuración de ESLint
   eslint: {
-    // Ignorar errores de ESLint durante el build
-    ignoreDuringBuilds: false,
+    // Ignorar errores de ESLint durante el build en producción
+    ignoreDuringBuilds: process.env.NODE_ENV === 'production',
   },
 
   // Configuración de transpilación

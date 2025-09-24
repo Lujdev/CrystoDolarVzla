@@ -50,27 +50,28 @@ export const reportPerformanceMetrics = () => {
     // Reportar LCP (Largest Contentful Paint)
     new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries();
-      const lastEntry = entries[entries.length - 1];
-      // LCP tracking for internal analytics
+      // LCP tracking for internal analytics - entries available but not logged
+      void entries; // Suppress unused variable warning
     }).observe({ entryTypes: ['largest-contentful-paint'] });
 
     // Reportar FCP (First Contentful Paint)
     new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries();
-      const firstEntry = entries[0];
-      // FCP tracking for internal analytics
+      // FCP tracking for internal analytics - entries available but not logged
+      void entries; // Suppress unused variable warning
     }).observe({ entryTypes: ['first-contentful-paint'] });
 
     // Reportar CLS (Cumulative Layout Shift)
-    let clsValue = 0;
     new PerformanceObserver((entryList) => {
+      let clsValue = 0;
       for (const entry of entryList.getEntries()) {
         if (entry.entryType === 'layout-shift') {
           const layoutShiftEntry = entry as PerformanceEntry & { value?: number };
           clsValue += layoutShiftEntry.value || 0;
         }
       }
-      // CLS tracking for internal analytics
+      // CLS tracking for internal analytics - clsValue calculated but not logged
+      void clsValue; // Suppress unused variable warning
     }).observe({ entryTypes: ['layout-shift'] });
   }
 };

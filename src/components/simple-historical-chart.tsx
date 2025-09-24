@@ -98,7 +98,7 @@ export function HistoricalChart({ data, startDate, endDate, initialExchange = 'a
 
     // Filter by time range
     const referenceDate = new Date();
-    let daysToSubtract = TIME_PERIODS[timeRange].days;
+    const daysToSubtract = TIME_PERIODS[timeRange].days;
     const startDate = new Date(referenceDate);
     startDate.setDate(startDate.getDate() - daysToSubtract);
 
@@ -256,37 +256,23 @@ export function HistoricalChart({ data, startDate, endDate, initialExchange = 'a
                 }}
               />
               <ChartTooltip
-                content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    return (
-                      <div className="bg-gray-800 border border-gray-600 rounded-lg p-3 shadow-lg">
-                        <p className="text-white font-medium mb-2">
-                          {new Date(label).toLocaleDateString('es-ES', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                        </p>
-                        {payload.map((entry: any, index: number) => (
-                          <div key={index} className="flex items-center gap-2 mb-1">
-                            <div 
-                              className="w-3 h-3 rounded-full" 
-                              style={{ backgroundColor: entry.color }}
-                            />
-                            <span className="text-gray-300 text-sm">
-                              {entry.dataKey}: 
-                            </span>
-                            <span className="text-white font-medium">
-                              {Number(entry.value).toFixed(2)} VES
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
+                content={
+                  <ChartTooltipContent
+                    className="w-[200px] bg-gray-800 border-gray-600"
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString('es-ES', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      });
+                    }}
+                    formatter={(value, name) => [
+                      `${Number(value).toFixed(2)} VES`,
+                      name,
+                    ]}
+                  />
+                }
               />
               {selectedExchange === 'all' || selectedExchange === 'BCV USD' ? (
                 <Line

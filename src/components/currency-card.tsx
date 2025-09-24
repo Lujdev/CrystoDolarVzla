@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { TrendingUp, TrendingDown, Minus, DollarSign, Building2, Calculator, Globe, InfoIcon, Euro, Wallet } from 'lucide-react'
+import { TrendingUp, DollarSign, Calculator, Globe, InfoIcon, Euro, Wallet } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { CryptoRate } from '@/types/currency'
 import { formatBolivares, getExchangeConfig } from '@/lib/crypto-data'

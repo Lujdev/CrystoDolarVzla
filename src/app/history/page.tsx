@@ -6,26 +6,9 @@ import { HistoricalChart } from '@/components/simple-historical-chart';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { LoadingSpinner } from '@/components/loading-spinner';
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Historial de Cotizaciones',
-  description: 'Consulta el historial completo de cotizaciones USDT/Bs, USD/Bs y EUR/Bs. Gráficos interactivos con datos de BCV, Binance P2P e ITALCAMBIOS.',
-  keywords: [
-    'historial cotizaciones',
-    'gráficos USDT',
-    'histórico BCV',
-    'tendencias dólar',
-    'análisis precios',
-    'Venezuela',
-    'bolívares histórico'
-  ],
-  openGraph: {
-    title: 'Historial de Cotizaciones | CrystoDolar',
-    description: 'Analiza las tendencias históricas de las cotizaciones USDT/Bs con gráficos interactivos.',
-    url: 'https://crystodolar.com/history',
-  },
-};
+// Note: metadata export is not supported in client components
+// This metadata should be moved to a layout.tsx file or the page should be converted to server component
 
 interface HistoricalRate {
   id: number;
