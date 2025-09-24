@@ -111,8 +111,8 @@ export function Header() {
 
           {/* Información de estado y controles */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Navegación a cotización histórica - OCULTO TEMPORALMENTE */}
-            {/* <div className="flex items-center space-x-2">
+
+            <div className="flex items-center space-x-2">
               <button 
                 onClick={() => window.location.href = '/history'}
                 className="flex items-center space-x-1 sm:space-x-2 text-sm text-gray-300 hover:text-blue-400 transition-colors"
@@ -121,7 +121,7 @@ export function Header() {
                 <span className="hidden sm:inline">Cotización Histórica</span>
                 <span className="sm:hidden">Histórico</span>
               </button>
-            </div> */}
+            </div>
 
             {/* Última actualización */}
             {lastUpdate && (

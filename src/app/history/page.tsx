@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { HistoricalChart } from '@/components/historical-chart';
+import { HistoricalChart } from '@/components/simple-historical-chart';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { LoadingSpinner } from '@/components/loading-spinner';
@@ -31,8 +31,7 @@ interface ApiResponse {
 const TIME_PERIODS = {
   '7d': { label: 'Últimos 7 días', days: 7 },
   '30d': { label: 'Últimos 30 días', days: 30 },
-  '90d': { label: 'Últimos 90 días', days: 90 },
-  '1y': { label: 'Último año', days: 365 }
+  '90d': { label: 'Últimos 3 meses', days: 90 },
 } as const;
 
 type TimePeriod = keyof typeof TIME_PERIODS;
@@ -49,19 +48,27 @@ function calculateDateRange(period: TimePeriod) {
   };
 }
 
+// Array de exchanges disponibles - fácil de extender
+const AVAILABLE_EXCHANGES = [
+  { value: 'all', label: 'Todos los Exchanges' },
+  { value: 'BCV', label: 'BCV' },
+  { value: 'ITALCAMBIOS', label: 'ITALCAMBIOS' },
+  { value: 'BINANCE_P2P', label: 'Binance P2P' },
+];
+
 // Función para validar y sanitizar parámetros de consulta
 function validateSearchParams(searchParams: URLSearchParams) {
   const exchange = searchParams.get('exchange') || 'all';
-  const records = parseInt(searchParams.get('records') || '500') || 500; // Por defecto 500 registros
+  const records = parseInt(searchParams.get('records') || '1000') || 1000; // Por defecto 1000 registros
   const period = (searchParams.get('period') || '7d') as TimePeriod; // Por defecto últimos 7 días
 
-  // Validar exchange
-  const validExchanges = ['all', 'BCV', 'BINANCE_P2P'];
+  // Validar exchange usando el array
+  const validExchanges = AVAILABLE_EXCHANGES.map(ex => ex.value);
   const validatedExchange = validExchanges.includes(exchange) ? exchange : 'all';
 
   // Validar records
   const validRecords = [0, 50, 100, 200, 500, 1000];
-  const validatedRecords = validRecords.includes(records) ? records : 500;
+  const validatedRecords = validRecords.includes(records) ? records : 1000;
 
   // Validar período
   const validPeriods = Object.keys(TIME_PERIODS) as TimePeriod[];
@@ -106,7 +113,7 @@ function HistoryContent() {
     }
     
     if (newParams.records !== undefined) {
-      if (newParams.records === 500) {
+      if (newParams.records === 1000) {
         current.delete('records');
       } else {
         current.set('records', newParams.records.toString());
@@ -270,80 +277,6 @@ function HistoryContent() {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Tasas de Cambio Históricas</h1>
-          
-          {/* Controles */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            {/* Filtro de Exchange */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="exchange-select" className="text-sm font-medium text-gray-300">
-                Exchange:
-              </label>
-              <select
-                id="exchange-select"
-                value={selectedExchange}
-                onChange={(e) => handleExchangeChange(e.target.value)}
-                className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="all">Todos los Exchanges</option>
-                <option value="BCV">BCV</option>
-                <option value="BINANCE_P2P">Binance P2P</option>
-              </select>
-            </div>
-            
-            {/* Límite de Registros */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="records-select" className="text-sm font-medium text-gray-300">
-                Registros:
-              </label>
-              <select
-                id="records-select"
-                value={records}
-                onChange={(e) => handleRecordsChange(Number(e.target.value))}
-                className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value={0}>Todos</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                <option value={200}>200</option>
-                <option value={500}>500</option>
-                <option value={1000}>1000</option>
-              </select>
-            </div>
-            
-            {/* Selector de Período */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="period-select" className="text-sm font-medium text-gray-300">
-                Período:
-              </label>
-              <select
-                id="period-select"
-                value={selectedPeriod}
-                onChange={(e) => handlePeriodChange(e.target.value as TimePeriod)}
-                className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {Object.entries(TIME_PERIODS).map(([key, { label }]) => (
-                  <option key={key} value={key}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          {/* Mostrar período actual */}
-          <div className="mb-4 p-3 bg-blue-900/30 border border-blue-700 rounded-lg">
-            <div className="text-sm text-blue-200">
-              <strong>Período Actual:</strong> {TIME_PERIODS[selectedPeriod].label}
-              <span className="ml-4">
-                ({new Date(currentDateRange.startDate).toLocaleDateString('es-ES')} - {new Date(currentDateRange.endDate).toLocaleDateString('es-ES')})
-              </span>
-              {historicalData.length > 0 && (
-                <span className="ml-4">
-                  <strong>Registros Encontrados:</strong> {historicalData.length}
-                </span>
-              )}
-            </div>
-          </div>
           
           {error && (
             <div className="bg-yellow-900/50 border border-yellow-700 rounded p-4 mb-6">

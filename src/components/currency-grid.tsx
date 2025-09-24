@@ -80,9 +80,14 @@ export function CurrencyGrid() {
 
 
 
-  // Filtrar por pestaña activa. No repetir elementos; mostrar como máximo 5 únicos
+  // Filtrar por pestaña activa y ordenar por menor monto de venta
   const visibleRatesBase = activeTab === 'all' ? rates : rates.filter((r) => r.category === activeTab)
-  const visibleRates = visibleRatesBase.slice(0, 5)
+  
+  // Ordenar por precio de venta (sell) de menor a mayor
+  const sortedRates = visibleRatesBase.sort((a, b) => a.sell - b.sell)
+  
+  // Mostrar como máximo 5 únicos
+  const visibleRates = sortedRates.slice(0, 5)
   return (
     <div className="space-y-6">
       {/* Indicador de carga durante actualización */}
