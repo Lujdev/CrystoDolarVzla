@@ -256,23 +256,41 @@ export function HistoricalChart({ data, startDate, endDate, initialExchange = 'a
                 }}
               />
               <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    className="w-[200px] bg-gray-800 border-gray-600"
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString('es-ES', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      });
-                    }}
-                    formatter={(value, name) => [
-                      `${Number(value).toFixed(2)} VES`,
-                      name,
-                    ]}
-                  />
-                }
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <div className="bg-white border border-gray-300 rounded-lg p-4 shadow-lg min-w-[250px]">
+                        <p className="text-gray-900 font-semibold mb-3 text-sm">
+                          {new Date(label).toLocaleDateString('es-ES', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                        </p>
+                        <div className="space-y-2">
+                          {payload.map((entry: any, index: number) => (
+                            <div key={index} className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-2">
+                                <div 
+                                  className="w-3 h-3 rounded-full" 
+                                  style={{ backgroundColor: entry.color }}
+                                />
+                                <span className="text-gray-700 text-sm font-medium">
+                                  {entry.dataKey}
+                                </span>
+                              </div>
+                              <span className="text-gray-900 font-bold text-sm">
+                                {Number(entry.value).toFixed(2)} VES
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
               />
               {selectedExchange === 'all' || selectedExchange === 'BCV USD' ? (
                 <Line
