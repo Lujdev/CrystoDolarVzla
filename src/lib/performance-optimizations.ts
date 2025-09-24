@@ -51,30 +51,26 @@ export const reportPerformanceMetrics = () => {
     new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries();
       const lastEntry = entries[entries.length - 1];
-      console.log('LCP:', lastEntry.startTime);
+      // LCP tracking for internal analytics
     }).observe({ entryTypes: ['largest-contentful-paint'] });
 
     // Reportar FCP (First Contentful Paint)
     new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries();
       const firstEntry = entries[0];
-      console.log('FCP:', firstEntry.startTime);
+      // FCP tracking for internal analytics
     }).observe({ entryTypes: ['first-contentful-paint'] });
 
     // Reportar CLS (Cumulative Layout Shift)
+    let clsValue = 0;
     new PerformanceObserver((entryList) => {
-      let clsValue = 0;
       for (const entry of entryList.getEntries()) {
-        // TypeScript safe access to layout-shift specific properties
-        const layoutShiftEntry = entry as PerformanceEntry & {
-          hadRecentInput?: boolean;
-          value?: number;
-        };
-        if (!layoutShiftEntry.hadRecentInput) {
+        if (entry.entryType === 'layout-shift') {
+          const layoutShiftEntry = entry as PerformanceEntry & { value?: number };
           clsValue += layoutShiftEntry.value || 0;
         }
       }
-      console.log('CLS:', clsValue);
+      // CLS tracking for internal analytics
     }).observe({ entryTypes: ['layout-shift'] });
   }
 };

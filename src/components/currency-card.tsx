@@ -22,9 +22,6 @@ export function CurrencyCard({ rate }: CurrencyCardProps) {
   const [showCalc, setShowCalc] = useState(false)
   const infoRef = useRef<HTMLDivElement | null>(null)
 
-  console.log(rate)
-
-
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       if (infoRef.current && !infoRef.current.contains(e.target as Node)) {
